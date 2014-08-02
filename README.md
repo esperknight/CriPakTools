@@ -23,3 +23,4 @@ CriPakTool.exe IN_FILE REPLACE_ME REPLACE_WITH [OUT_FILE] - Replaces REPLACE_ME 
 Be warned, I don't do much error checking so it'll probably crash if used in any way wrong :)  It shouldn't break your computer... but I take no responsibility if somehow it explodes :)
 
 TODO : Add more error checking
+TODO : Clean up code
