@@ -344,6 +344,8 @@ namespace CriPakTools
             Dictionary<int, long> SizePosTable, CSizePosTable;
             Dictionary<int, Type> SizeTypeTable, CSizeTypeTable;
 
+            List<int> IDs = new List<int>();
+
             SizeTable = new Dictionary<int, uint>();
             SizePosTable = new Dictionary<int, long>();
             SizeTypeTable = new Dictionary<int, Type>();
@@ -385,6 +387,8 @@ namespace CriPakTools
 
                     type = GetColumnType(utfDataL, i, "ExtractSize");
                     CSizeTypeTable.Add((int)ID, type);
+
+                    IDs.Add(ID);
                 }
             }
 
@@ -418,16 +422,20 @@ namespace CriPakTools
 
                     type = GetColumnType(utfDataH, i, "ExtractSize");
                     CSizeTypeTable.Add((int)ID, type);
+
+                    IDs.Add(ID);
                 }
             }
 
             FileEntry temp;
-            int id = 0;
+            //int id = 0;
             uint value = 0, value2 = 0;
             ulong baseoffset = ContentOffset;
 
-            for (int i = 0; i < SizeTable.Count; i++)
+            for (int i = 0; i < IDs.Count; i++)
             {
+                int id = IDs[i];
+
                 temp = new FileEntry();
                 SizeTable.TryGetValue(id, out value);
                 CSizeTable.TryGetValue(id, out value2);
@@ -460,7 +468,7 @@ namespace CriPakTools
                     baseoffset += value;
 
 
-                id++;
+                //id++;
             }
 
             files = null;
