@@ -432,6 +432,10 @@ namespace CriPakTools
             uint value = 0, value2 = 0;
             ulong baseoffset = ContentOffset;
 
+            // Seems ITOC can mix up the IDs..... but they'll alwaysy be in order...
+            IDs = IDs.OrderBy(x => x).ToList();
+
+
             for (int i = 0; i < IDs.Count; i++)
             {
                 int id = IDs[i];
@@ -443,7 +447,7 @@ namespace CriPakTools
                 temp.TOCName = "ITOC";
 
                 temp.DirName = null;
-                temp.FileName = id;
+                temp.FileName = id.ToString("D4");
 
                 temp.FileSize = value;
                 temp.FileSizePos = SizePosTable[id];

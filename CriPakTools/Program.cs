@@ -82,13 +82,15 @@ namespace CriPakTools
                 string ins_name = args[1];
                 string replace_with = args[2];
 
-                string outputName = cpk_name + ".tmp";
+                FileInfo fi = new FileInfo(cpk_name);
+
+                string outputName = fi.FullName + ".tmp";
                 if (args.Length >= 4)
                 {
-                    outputName = args[3];
+                    outputName = fi.DirectoryName + "\\" + args[3];
                 }
 
-                BinaryWriter newCPK = new BinaryWriter(File.OpenWrite(cpk_name + ".tmp"));
+                BinaryWriter newCPK = new BinaryWriter(File.OpenWrite(outputName));
 
                 List<FileEntry> entries = cpk.FileTable.OrderBy(x => x.FileOffset).ToList();
 
@@ -96,19 +98,22 @@ namespace CriPakTools
                 {
                     if (entries[i].FileType != "CONTENT")
                     {
-                        entries[i].FileOffset = (ulong)newCPK.BaseStream.Position;
+                        
 
                         if (entries[i].FileName.ToString() != ins_name)
                         {
+                            oldFile.BaseStream.Seek((long)entries[i].FileOffset, SeekOrigin.Begin);
+                            
+                            entries[i].FileOffset = (ulong)newCPK.BaseStream.Position;
                             cpk.UpdateFileEntry(entries[i]);
 
-                            oldFile.BaseStream.Seek((long)entries[i].FileOffset, SeekOrigin.Begin);
                             byte[] chunk = oldFile.ReadBytes(Int32.Parse(entries[i].FileSize.ToString()));
                             newCPK.Write(chunk);
                         }
                         else
                         {
                             byte[] newbie = File.ReadAllBytes(replace_with);
+                            entries[i].FileOffset = (ulong)newCPK.BaseStream.Position;
                             entries[i].FileSize = Convert.ChangeType(newbie.Length, entries[i].FileSizeType);
                             entries[i].ExtractSize = Convert.ChangeType(newbie.Length, entries[i].FileSizeType);
                             cpk.UpdateFileEntry(entries[i]);
@@ -143,7 +148,8 @@ namespace CriPakTools
                 if (args.Length < 4)
                 {
                     File.Delete(cpk_name);
-                    File.Move(cpk_name + ".tmp", cpk_name);
+                    File.Move(outputName, cpk_name);
+                    File.Delete(outputName);
                 }
             }
         }
