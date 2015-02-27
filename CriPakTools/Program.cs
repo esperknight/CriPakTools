@@ -65,7 +65,8 @@ namespace CriPakTools
                     byte[] chunk = oldFile.ReadBytes(Int32.Parse(entries[i].FileSize.ToString()));
                     if (isComp == "CRILAYLA")
                     {
-                        chunk = cpk.DecompressCRILAYLA(chunk, Int32.Parse(entries[i].ExtractSize.ToString()));
+                        int size = Int32.Parse((entries[i].ExtractSize ?? entries[i].FileSize).ToString());
+                        chunk = cpk.DecompressCRILAYLA(chunk, size);
                     }
 
                     File.WriteAllBytes(((entries[i].DirName != null) ? entries[i].DirName + "/" : "") + entries[i].FileName.ToString(), chunk);
@@ -98,6 +99,19 @@ namespace CriPakTools
                 {
                     if (entries[i].FileType != "CONTENT")
                     {
+
+                        if (entries[i].FileType == "FILE")
+                        {
+                            // I'm too lazy to figure out how to update the ContextOffset position so this works :)
+                            if ((ulong)newCPK.BaseStream.Position < cpk.ContentOffset)
+                            {
+                                ulong padLength = cpk.ContentOffset - (ulong)newCPK.BaseStream.Position;
+                                for (ulong z = 0; z < padLength; z++)
+                                {
+                                    newCPK.Write((byte)0);
+                                }
+                            }
+                        }
                         
 
                         if (entries[i].FileName.ToString() != ins_name)

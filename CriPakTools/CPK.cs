@@ -26,7 +26,6 @@ namespace CriPakTools
         {
             if (File.Exists(sPath))
             {
-                ulong ContentOffset;
                 uint Files;
                 ushort Align;
 
@@ -378,15 +377,17 @@ namespace CriPakTools
                     type = GetColumnType(utfDataL, i, "FileSize");
                     SizeTypeTable.Add((int)ID, type);
 
+                    if ((GetColumnData(utfDataL, i, "ExtractSize")) != null)
+                    {
+                        size1 = (ushort)GetColumnData(utfDataL, i, "ExtractSize");
+                        CSizeTable.Add((int)ID, (uint)size1);
 
-                    size1 = (ushort)GetColumnData(utfDataL, i, "ExtractSize");
-                    CSizeTable.Add((int)ID, (uint)size1);
+                        pos = GetColumnPostion(utfDataL, i, "ExtractSize");
+                        CSizePosTable.Add((int)ID, pos + DataLPos);
 
-                    pos = GetColumnPostion(utfDataL, i, "ExtractSize");
-                    CSizePosTable.Add((int)ID, pos + DataLPos);
-
-                    type = GetColumnType(utfDataL, i, "ExtractSize");
-                    CSizeTypeTable.Add((int)ID, type);
+                        type = GetColumnType(utfDataL, i, "ExtractSize");
+                        CSizeTypeTable.Add((int)ID, type);
+                    }
 
                     IDs.Add(ID);
                 }
@@ -411,17 +412,17 @@ namespace CriPakTools
                     type = GetColumnType(utfDataH, i, "FileSize");
                     SizeTypeTable.Add((int)ID, type);
 
+                    if ((GetColumnData(utfDataH, i, "ExtractSize")) != null)
+                    {
+                        size2 = (uint)GetColumnData(utfDataH, i, "ExtractSize");
+                        CSizeTable.Add(ID, size2);
 
+                        pos = GetColumnPostion(utfDataH, i, "ExtractSize");
+                        CSizePosTable.Add((int)ID, pos + DataHPos);
 
-
-                    size2 = (uint)GetColumnData(utfDataH, i, "ExtractSize");
-                    CSizeTable.Add(ID, size2);
-
-                    pos = GetColumnPostion(utfDataH, i, "ExtractSize");
-                    CSizePosTable.Add((int)ID, pos + DataHPos);
-
-                    type = GetColumnType(utfDataH, i, "ExtractSize");
-                    CSizeTypeTable.Add((int)ID, type);
+                        type = GetColumnType(utfDataH, i, "ExtractSize");
+                        CSizeTypeTable.Add((int)ID, type);
+                    }
 
                     IDs.Add(ID);
                 }
@@ -453,9 +454,12 @@ namespace CriPakTools
                 temp.FileSizePos = SizePosTable[id];
                 temp.FileSizeType = SizeTypeTable[id];
 
-                temp.ExtractSize = value2;
-                temp.ExtractSizePos = CSizePosTable[id];
-                temp.ExtractSizeType = CSizeTypeTable[id];
+                if (CSizeTable.Count > 0)
+                {
+                    temp.ExtractSize = value2;
+                    temp.ExtractSizePos = CSizePosTable[id];
+                    temp.ExtractSizeType = CSizeTypeTable[id];
+                }
 
                 temp.FileType = "FILE";
 
@@ -908,9 +912,7 @@ namespace CriPakTools
         public byte[] ETOC_packet { get; set; }
         public byte[] GTOC_packet { get; set; }
 
-        ulong TocOffset, EtocOffset, ItocOffset, GtocOffset;
-
-
+        public ulong TocOffset, EtocOffset, ItocOffset, GtocOffset, ContentOffset;
     }
 
     public class UTF
@@ -981,7 +983,10 @@ namespace CriPakTools
                 column = new COLUMN();
                 column.flags = br.ReadByte();
                 if (column.flags == 0)
-                    br.BaseStream.Seek(-1, SeekOrigin.Current);
+                {
+                    br.BaseStream.Seek(3, SeekOrigin.Current);
+                    column.flags = br.ReadByte();
+                }
 
                 column.name = tools.ReadCString(br, -1, (long)(br.ReadInt32() + strings_offset));
                 columns.Add(column);
