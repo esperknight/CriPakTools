@@ -454,7 +454,7 @@ namespace CriPakTools
                 temp.FileSizePos = SizePosTable[id];
                 temp.FileSizeType = SizeTypeTable[id];
 
-                if (CSizeTable.Count > 0)
+                if (CSizeTable.Count > 0 && CSizeTable.ContainsKey(id))
                 {
                     temp.ExtractSize = value2;
                     temp.ExtractSizePos = CSizePosTable[id];
