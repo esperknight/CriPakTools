@@ -590,6 +590,10 @@ namespace CriPakTools
 
         public byte[] DecompressCRILAYLA(byte[] input, int USize)
         {
+            // it appears the header can contain entries for removed files 
+            if (input.Length == 0 || USize == 0)
+                return new byte[0];
+
             byte[] result;// = new byte[USize];
 
             MemoryStream ms = new MemoryStream(input);
