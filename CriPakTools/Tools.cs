@@ -54,7 +54,7 @@ namespace CriPakTools
                 br.BaseStream.Seek(lOffset, SeekOrigin.Begin);
 
                 if (enc == null)
-                    result = Encoding.ASCII.GetString(br.ReadBytes(i));
+                    result = Encoding.GetEncoding("SJIS").GetString(br.ReadBytes(i));
                 else
                     result = enc.GetString(br.ReadBytes(i));
 
@@ -64,7 +64,7 @@ namespace CriPakTools
             {
                 br.BaseStream.Seek(fTemp, SeekOrigin.Begin);
                 if (enc == null)
-                    result = Encoding.ASCII.GetString(br.ReadBytes(i));
+                    result = Encoding.GetEncoding("SJIS").GetString(br.ReadBytes(i));
                 else
                     result = enc.GetString(br.ReadBytes(i));
 

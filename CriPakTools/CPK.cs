@@ -42,6 +42,8 @@ namespace CriPakTools
                 ReadUTFData(br);
 
                 CPK_packet = utf_packet;
+                //Dump CPK
+                //File.WriteAllBytes("U_CPK", CPK_packet);
 
                 FileEntry CPAK_entry = new FileEntry
                 {
@@ -202,6 +204,8 @@ namespace CriPakTools
 
             // Store unencrypted TOC
             TOC_packet = utf_packet;
+            //Dump TOC
+            //File.WriteAllBytes("U_TOC", TOC_packet);
 
             FileEntry toc_entry = FileTable.Where(x => x.FileName.ToString() == "TOC_HDR").Single();
             toc_entry.Encrypted = isUtfEncrypted;
@@ -310,6 +314,8 @@ namespace CriPakTools
             ReadUTFData(br);
 
             ITOC_packet = utf_packet;
+            //Dump ITOC
+            //File.WriteAllBytes("U_ITOC", ITOC_packet);
 
             FileEntry itoc_entry = FileTable.Where(x => x.FileName.ToString() == "ITOC_HDR").Single();
             itoc_entry.Encrypted = isUtfEncrypted;
@@ -538,6 +544,8 @@ namespace CriPakTools
             ReadUTFData(br);
 
             ETOC_packet = utf_packet;
+            //Dump ETOC
+            //File.WriteAllBytes("U_ETOC", ETOC_packet);
 
             FileEntry etoc_entry = FileTable.Where(x => x.FileName.ToString() == "ETOC_HDR").Single();
             etoc_entry.Encrypted = isUtfEncrypted;
@@ -561,7 +569,6 @@ namespace CriPakTools
             for (int i = 0; i < fileEntries.Count; i++)
             {
                 FileTable[i].LocalDir = GetColumnData(files, i, "LocalDir");
-                FileTable[i].UpdateDateTime = (ulong)GetColumnData(files, i, "UpdateDateTime");
             }
 
             return true;

@@ -69,6 +69,7 @@ namespace CriPakTools
                         chunk = cpk.DecompressCRILAYLA(chunk, size);
                     }
 
+                    Console.WriteLine("Extracting: " + ((entries[i].DirName != null) ? entries[i].DirName + "/" : "") + entries[i].FileName.ToString());
                     File.WriteAllBytes(((entries[i].DirName != null) ? entries[i].DirName + "/" : "") + entries[i].FileName.ToString(), chunk);
                 }
             }
